@@ -1,0 +1,25 @@
+{
+  "name": "textmatching",
+  "version": "1.0.0",
+  "description": "algorithm textmatching",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuggwoii/TextMatching.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tuggwoii/TextMatching/issues"
+  },
+  "homepage": "https://github.com/tuggwoii/TextMatching#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "koa": "^1.1.2",
+    "koa-static": "^1.5.2",
+    "swig": "^1.4.2"
+  }
+}
