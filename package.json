@@ -17,9 +17,7 @@
   },
   "homepage": "https://github.com/tuggwoii/TextMatching#readme",
   "dependencies": {
-    "bootstrap": "^3.3.6",
-    "koa": "^1.1.2",
-    "koa-static": "^1.5.2",
-    "swig": "^1.4.2"
+    "ejs": "^2.3.4",
+    "express": "^4.13.3"
   }
 }
