@@ -35,4 +35,4 @@ exports.search = function(pattern, text) {
 		}
     }
 	return -1;
-}
+} 

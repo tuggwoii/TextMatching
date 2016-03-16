@@ -2,7 +2,7 @@ app.controller('AppController', function ($scope, $http, $timeout) {
 
 	$scope.model = {
 		results: 10
-	};
+	}; 
 	
 	function countKeywords(keys, value) {
 		var count = 0;
