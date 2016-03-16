@@ -1,8 +1,8 @@
 var express = require('express');
 var app = express();
 var fs = require('fs');
-var boyerMoore = require('./Boyer-Moore.js');
-var readline = require('readline');
+var bodyParser = require('body-parser');
+var jsonfile = require('jsonfile');
 
 app.set('port', (process.env.PORT || 8000));
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
@@ -14,49 +14,49 @@ app.use('/views', express.static(__dirname + '/views'));
 app.use('/example', express.static(__dirname + '/example'));
 app.engine('html', require('ejs').renderFile);
 
-var products = [];
-
-
-function readInput () {
-	var reader = readline.createInterface({
-		input: fs.createReadStream('resources/product.txt'),
-		output: process.stdout,
-		terminal: false
-	});
-	reader.on('line', function(line) {
-		products.push(line);
-	});
-}
- 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+app.use(bodyParser.json());
+
 app.get('/', function(request, response) {
-  response.render('pages/index.html', { product: products.length});
+  response.render('pages/index.html');
 });
 
-app.get('/search', function (request, response) {
+app.get('/students', function (request, response) {
     response.setHeader('Content-Type', 'application/json');
-	var queryResult = [];
-	console.log(request.query);
-	if(request.query.keywords) {
-		console.log(request.query.keywords);
-		for(var i = 0 ; i < products.length ; i++) {
-			var keys = request.query.keywords.split(' ');
-			var isMatch = false;
-			for(var j = 0; j < keys.length; j++) {
-				result = boyerMoore.search(keys[j], products[i]);
-				if(result > -1) {
-					isMatch = true;
-				}
-			}
-			if(isMatch) {
-				queryResult.push({ id: (i+1), name: products[i]});
-			}
-		}
-	}
-	
-    response.send(JSON.stringify(queryResult));
+    response.send(fs.readFileSync('resources/students.json'));
+});
+
+app.get('/courses', function (request, response) {
+    response.setHeader('Content-Type', 'application/json');
+    response.send(fs.readFileSync('resources/courses.json'));
+});
+
+app.get('/configs', function (request, response) {
+    response.setHeader('Content-Type', 'application/json');
+    response.send(fs.readFileSync('resources/configs.json'));
+});
+
+app.post('/students', function (request, response) {
+    jsonfile.writeFile('resources/students.json', request.body, function (err) {
+        response.setHeader('Content-Type', 'application/json');
+        response.send(fs.readFileSync('resources/students.json'));
+    });
+});
+
+app.post('/courses', function (request, response) {
+    jsonfile.writeFile('resources/courses.json', request.body, function (err) {
+        response.setHeader('Content-Type', 'application/json');
+        response.send(fs.readFileSync('resources/courses.json'));
+    });
+});
+
+app.post('/configs', function (request, response) {
+    jsonfile.writeFile('resources/configs.json', request.body, function (err) {
+        response.setHeader('Content-Type', 'application/json');
+        response.send(fs.readFileSync('resources/configs.json'));
+    });
 });
 
 app.get('*', function (request, response) {
@@ -66,5 +66,3 @@ app.get('*', function (request, response) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
-
-readInput();

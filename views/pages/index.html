@@ -1,36 +1,135 @@
 <!DOCTYPE>
 <html>
-	<head>
-		<title>Text Matching</title>
-		<link href="css/style.css" rel="stylesheet" type="text/css" />
-		<link href='https://fonts.googleapis.com/css?family=Dosis' rel='stylesheet' type='text/css'>
-	</head>
-	<body ng-app="app"> 
-		<div class="container" ng-controller="AppController">
-			<div class="center">
-				<h1>Product Search</h1>
-				<p>There are <%= product %> products in the system</p>
-				<div>
-					<p>How many result do you want? <input type="number" class="resultInput" ng-model="model.results"></p>
-				</div>
-				<div>
-					<input type="text" ng-keyup="onKeypress($event)" ng-model="model.keywords" class="searchField" />
-				</div>
-				<div>
-					<button ng-click="search()" class="searchButton" type="button">Search</button>
-				</div>
-				<p class="loading" ng-if="model.isLoad">Loading...</p>
-			</div>
-			<div class="result" ng-if="model.data">
-					<h1 class="center">Search result</h1>
-					<p class="center" ng-if="model.data.length == 0">No result.</p>
-					<ul>
-						<li ng-repeat="item in model.data track by $index">{{item.id}} - {{item.name}} [{{item.keyCount}}, {{item.firstKey}}, {{item.keyDistance}}]</li>
-					</ul>
-			</div>
-		</div>
-		<script src="js/angular.min.js"></script>
-		<script src="js/app.js"></script>
-		<script src="js/app-controller.js"></script>
-	</body>
+<head>
+    <title>COMP MEDIA</title>
+    <link href="css/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Dosis' rel='stylesheet' type='text/css'>
+</head>
+<body ng-app="app">
+    <div class="container" ng-controller="AppController">
+        <div>
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Configs</a></li>
+                <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Courses</a></li>
+                <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Students</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <form>
+                        <div class="form-group">
+                            <label>Chart Title</label>
+                            <input ng-model="configs.title" type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Max Scale</label>
+                            <input ng-model="configs.maxScale" type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Scale Increment</label>
+                            <input ng-model="configs.incrementScale" type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Display Image Number</label>
+                            <input ng-model="configs.imageNumber" type="text" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Image Fade Delay (Sec)</label>
+                            <input ng-model="configs.delay" type="text" class="form-control" />
+                        </div>
+                        <button type="button" class="btn btn-success" ng-click="saveConfig()">SAVE</button>
+                    </form>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="profile">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+                        <div class="panel panel-default" ng-repeat="course in courses">
+                            <div class="panel-heading" role="tab" id="heading{{$index}}">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index}}" aria-expanded="true" aria-controls="collapse{{$index}}">
+                                        {{course.name}}
+                                    </a>
+                                    <span class="remove" ng-click="removeCourse($index)">Remove</span>
+                                </h4>
+                            </div>
+                            <div id="collapse{{$index}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{$index}}">
+                                <div class="panel-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input ng-model="course.name" type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Chart Color</label>
+                                            <input ng-model="course.color" type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Students drop (Input uid as CSV)</label>
+                                            <input ng-model="course.students" type="text" class="form-control" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button">
+                            <a href="#" ng-click="addCourse()">Add More</a>
+                            <span> | </span>
+                            <button type="button" class="btn btn-success" ng-click="saveCourse()">SAVE</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="messages">
+                    <div class="panel-group" id="accordion2" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default" ng-repeat="student in students">
+                            <div class="panel-heading" role="tab" id="headingS{{$index}}">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion2" href="#collapseS{{$index}}" aria-expanded="true" aria-controls="collapseS{{$index}}">
+                                        {{student.name}}
+                                    </a>
+                                    <span class="remove" ng-click="removeStudent($index)">Remove</span>
+                                </h4>
+                            </div>
+                            <div id="collapseS{{$index}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingS{{$index}}">
+                                <div class="panel-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label>uid</label>
+                                            <input ng-model="student.uid" type="text" disabled class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Name</label>
+                                            <input ng-model="student.name" type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Student Id</label>
+                                            <input ng-model="student.id" type="text" class="form-control" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Image File</label>
+                                            <input ng-model="student.image" type="text" class="form-control" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button">
+                            <a href="#" ng-click="addStudent()">Add More</a>
+                            <span> | </span>
+                            <button type="button" class="btn btn-success" ng-click="saveStudent()">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/app-controller.js"></script>
+    <script src="css/bootstrap/js/bootstrap.js"></script>
+</body>
 </html>
